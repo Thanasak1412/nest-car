@@ -9,6 +9,6 @@ export class UsersController {
 
   @Post('signup')
   signUp(@Body() body: CreateUserDto) {
-    return this.usersService.create(body.email, body.password);
+    return this.usersService.create(body);
   }
 }
