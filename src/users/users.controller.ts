@@ -7,25 +7,18 @@ import {
   HttpStatus,
   Param,
   Patch,
-  Post,
 } from '@nestjs/common';
 
 import { Serialize } from '../interceptor/serialize.interceptor';
-import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 
-@Controller('auth')
+@Controller('users')
 @Serialize(UserDto)
 export class UsersController {
   constructor(private usersService: UsersService) {}
-
-  @Post('signup')
-  signUp(@Body() body: CreateUserDto) {
-    return this.usersService.create(body);
-  }
 
   @Get(':id')
   findUser(@Param('id') id: number): Promise<User> {
