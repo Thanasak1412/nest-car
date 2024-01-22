@@ -1,9 +1,10 @@
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto } from '../auth/dtos/create-user.dto';
 import { FindUserDto } from './dtos/find-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
@@ -15,8 +16,17 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    const createUser = this.userRepository.create(createUserDto);
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const saltOrRound = 10;
+
+    const salt = await bcrypt.genSalt(saltOrRound);
+
+    const hashPassword = await bcrypt.hash(createUserDto.password, salt);
+
+    const createUser = this.userRepository.create({
+      ...createUserDto,
+      password: hashPassword,
+    });
 
     return this.userRepository.save(createUser);
   }
@@ -44,7 +54,7 @@ export class UsersService {
       },
     });
 
-    if (findUsers.length) {
+    if (!findUsers.length) {
       throw new NotFoundException(`not found user with email: ${email}`);
     }
 
