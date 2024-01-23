@@ -1,7 +1,8 @@
+import { Response } from 'express';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -15,13 +16,18 @@ export class AuthController {
   ) {}
 
   @Post('signup')
-  signUp(@Body() body: CreateUserDto) {
-    return this.usersService.create(body);
+  signUp(
+    @Res({ passthrough: true }) response: Response,
+    @Body() createUserDto: CreateUserDto,
+  ) {
+    return this.authService.signUp(response, createUserDto);
   }
 
   @Post('signin')
-  signIn(@Body() signInDto: SignInDto): Promise<User> {
-    console.log('signInDto => ', signInDto);
-    return this.authService.signIn(signInDto);
+  signIn(
+    @Res({ passthrough: true }) response: Response,
+    @Body() signInDto: SignInDto,
+  ): Promise<User> {
+    return this.authService.signIn(response, signInDto);
   }
 }

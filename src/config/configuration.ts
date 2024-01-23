@@ -5,6 +5,11 @@ export default () => ({
   },
   cookie: {
     secret: process.env.COOKIE_SECRET,
+    configuration: {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+    },
   },
   db: {
     name: process.env.DB_NAME,

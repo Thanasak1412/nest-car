@@ -1,6 +1,7 @@
 const API_PORT = 'api.port';
 const API_VERSION = 'api.version';
 const COOKIE_SECRET = 'cookie.secret';
+const COOKIE_OPTIONS = 'cookie.configuration';
 const ENV_DEV = 'env.development';
 const ENV_TEST = 'env.test';
 const ENV_UAT = 'env.uat';
@@ -12,6 +13,7 @@ export {
   API_PORT,
   API_VERSION,
   COOKIE_SECRET,
+  COOKIE_OPTIONS,
   ENV_DEV,
   ENV_TEST,
   ENV_UAT,
