@@ -1,7 +1,14 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
+import {
+  configValidationAppSchema,
+  configValidationDbSchema,
+} from './config/config.schema';
+import configuration from './config/configuration';
+import { DB_NAME, DB_TYPE } from './constants/configuration';
 import { Report } from './reports/report.entity';
 import { ReportsModule } from './reports/reports.module';
 import { User } from './users/user.entity';
@@ -9,11 +16,23 @@ import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User, Report],
-      synchronize: true,
+    ConfigModule.forRoot({
+      validationSchema: configValidationAppSchema,
+      load: [configuration],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [
+        ConfigModule.forRoot({
+          validationSchema: configValidationDbSchema,
+        }),
+      ],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: DB_TYPE,
+        database: configService.get(DB_NAME),
+        entities: [User, Report],
+        synchronize: true,
+      }),
     }),
     UsersModule,
     ReportsModule,
