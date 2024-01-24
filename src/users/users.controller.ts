@@ -7,8 +7,10 @@ import {
   HttpStatus,
   Param,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 
+import { AuthGuard } from '../guards/auth.guard';
 import { Serialize } from '../interceptor/serialize.interceptor';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
@@ -17,6 +19,7 @@ import { UsersService } from './users.service';
 
 @Controller('users')
 @Serialize(UserDto)
+@UseGuards(AuthGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 

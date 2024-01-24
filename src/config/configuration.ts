@@ -14,4 +14,7 @@ export default () => ({
   db: {
     name: process.env.DB_NAME,
   },
+  session: {
+    secret: process.env.SESSION_SECRET,
+  },
 });

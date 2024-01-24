@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { User } from 'src/users/user.entity';
-import { UsersService } from 'src/users/users.service';
 
 import { Body, Controller, Post, Res } from '@nestjs/common';
 
@@ -10,10 +9,7 @@ import { SignInDto } from './dtos/sign-in.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
   signUp(

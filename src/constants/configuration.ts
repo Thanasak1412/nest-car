@@ -8,6 +8,7 @@ const ENV_UAT = 'env.uat';
 const ENV_PROD = 'env.prod';
 const DB_TYPE = 'sqlite';
 const DB_NAME = 'db.name';
+const SESSION_SECRET = 'session.secret';
 
 export {
   API_PORT,
@@ -20,4 +21,5 @@ export {
   ENV_PROD,
   DB_TYPE,
   DB_NAME,
+  SESSION_SECRET,
 };
