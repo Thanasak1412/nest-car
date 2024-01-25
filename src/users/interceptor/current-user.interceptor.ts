@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import { CurrentUserRequest } from 'src/types/users';
 
 import {
   CallHandler,
@@ -8,6 +7,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 
+import { CurrentUserRequest } from '../../types/users';
 import { UsersService } from '../users.service';
 
 @Injectable()

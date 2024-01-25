@@ -1,7 +1,5 @@
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
-import { User } from 'src/users/user.entity';
-import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 
 import {
@@ -14,6 +12,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { COOKIE_OPTIONS } from '../constants/configuration';
 import { USER_ID } from '../constants/user';
+import { User } from '../users/user.entity';
+import { UsersService } from '../users/users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SignInDto } from './dtos/sign-in.dto';
 
