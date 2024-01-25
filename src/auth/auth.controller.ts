@@ -1,8 +1,8 @@
 import { Response } from 'express';
-import { User } from 'src/users/user.entity';
 
 import { Body, Controller, Post, Res } from '@nestjs/common';
 
+import { User } from '../users/user.entity';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SignInDto } from './dtos/sign-in.dto';
