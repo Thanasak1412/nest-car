@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { Repository } from 'typeorm';
 
@@ -12,6 +13,7 @@ import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { SignInDto } from './dtos/sign-in.dto';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -88,6 +90,61 @@ describe('AuthService', () => {
 
       await expect(authService.signUp(response, createUserDto)).rejects.toThrow(
         ConflictException,
+      );
+    });
+  });
+
+  describe('signIn', () => {
+    it('should sign in the user and set the cookie', async () => {
+      const signInDto: SignInDto = {
+        email: 'test@email.com',
+        password: 'Test-123jklfadsjkf',
+      };
+
+      const response: Response = {
+        cookie: jest.fn(),
+      } as unknown as Response;
+
+      const user = new User();
+      user.id = 1;
+      user.email = signInDto.email;
+      user.password = signInDto.password;
+
+      jest.spyOn(usersService, 'find').mockResolvedValue([user]);
+      jest.spyOn(usersRepository, 'find').mockResolvedValue([user]);
+      jest
+        .spyOn(bcrypt, 'compare')
+        .mockImplementation(() => Promise.resolve(true));
+
+      await authService.signIn(response, signInDto);
+
+      const [findUser] = await usersService.find({ email: signInDto.email });
+
+      expect(usersService.find).toHaveBeenCalledWith({
+        email: signInDto.email,
+      });
+      expect(findUser.email).toEqual(signInDto.email);
+      expect(response.cookie).toHaveBeenCalledWith(
+        USER_ID,
+        user.id,
+        configService.get(COOKIE_OPTIONS),
+      );
+    });
+
+    it('should throw new unauthorized if the email or password is incorrect', async () => {
+      const signInDto: SignInDto = {
+        email: 'test@test.com',
+        password: 'Test.asdjfk123fdjskaf',
+      };
+
+      const response: Response = {
+        cookie: jest.fn(),
+      } as unknown as Response;
+
+      jest.spyOn(usersService, 'find').mockResolvedValue([]);
+
+      await expect(authService.signIn(response, signInDto)).rejects.toThrow(
+        UnauthorizedException,
       );
     });
   });
