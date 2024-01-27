@@ -111,10 +111,7 @@ describe('AuthService', () => {
       user.password = signInDto.password;
 
       jest.spyOn(usersService, 'find').mockResolvedValue([user]);
-      jest.spyOn(usersRepository, 'find').mockResolvedValue([user]);
-      jest
-        .spyOn(bcrypt, 'compare')
-        .mockImplementation(() => Promise.resolve(true));
+      jest.spyOn(bcrypt, 'compare').mockImplementation(() => true);
 
       await authService.signIn(response, signInDto);
 
@@ -131,7 +128,7 @@ describe('AuthService', () => {
       );
     });
 
-    it('should throw new unauthorized if the email or password is incorrect', async () => {
+    it('should throw new unauthorized if the email is incorrect', async () => {
       const signInDto: SignInDto = {
         email: 'test@test.com',
         password: 'Test.asdjfk123fdjskaf',
@@ -142,6 +139,29 @@ describe('AuthService', () => {
       } as unknown as Response;
 
       jest.spyOn(usersService, 'find').mockResolvedValue([]);
+
+      await expect(authService.signIn(response, signInDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+
+    it('should throw unauthorized if the password is incorrect', async () => {
+      const signInDto: SignInDto = {
+        email: 'Test@email.com',
+        password: 'password',
+      };
+
+      const response: Response = {
+        cookie: jest.fn(),
+      } as unknown as Response;
+
+      const user = new User();
+      user.id = 1;
+      user.email = signInDto.email;
+      user.password = 'hash-password';
+
+      jest.spyOn(usersService, 'find').mockResolvedValue([user]);
+      jest.spyOn(bcrypt, 'compare').mockImplementation(() => false);
 
       await expect(authService.signIn(response, signInDto)).rejects.toThrow(
         UnauthorizedException,
