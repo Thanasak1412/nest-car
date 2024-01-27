@@ -1,5 +1,5 @@
 import { plainToInstance } from 'class-transformer';
-import { IsStrongPassword, validate } from 'class-validator';
+import { validate } from 'class-validator';
 import { Response } from 'express';
 import { Repository } from 'typeorm';
 
