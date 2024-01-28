@@ -21,18 +21,18 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get(':id')
-  findUser(@Param('id') id: number): Promise<User> {
-    return this.usersService.findOne(id);
+  findUser(@Param('id') id: string): Promise<User> {
+    return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
-  updateUser(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateUser(id, updateUserDto);
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.updateUser(+id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUser(@Param('id') id: number) {
-    this.usersService.deleteUser(id);
+  deleteUser(@Param('id') id: string) {
+    this.usersService.deleteUser(+id);
   }
 }
