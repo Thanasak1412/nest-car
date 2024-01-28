@@ -1,5 +1,6 @@
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
+import helmet from 'helmet';
 
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -23,6 +24,7 @@ async function bootstrap() {
   const cookieSecret = configService.get(COOKIE_SECRET);
 
   app.enableCors(configService.get(API_CORS_OPTIONS));
+  app.use(helmet());
   app.setGlobalPrefix(configService.get(API_VERSION));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(cookieParser(cookieSecret));
