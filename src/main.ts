@@ -7,6 +7,7 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
 import {
+  API_CORS_OPTIONS,
   API_PORT,
   API_VERSION,
   COOKIE_SECRET,
@@ -21,6 +22,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const cookieSecret = configService.get(COOKIE_SECRET);
 
+  app.enableCors(configService.get(API_CORS_OPTIONS));
   app.setGlobalPrefix(configService.get(API_VERSION));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(cookieParser(cookieSecret));
