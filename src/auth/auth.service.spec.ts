@@ -51,7 +51,7 @@ describe('AuthService', () => {
       user.id = 1;
       user.email = createUserDto.email;
 
-      jest.spyOn(usersRepository, 'find').mockResolvedValue([]);
+      jest.spyOn(usersRepository, 'findOne').mockResolvedValue(null);
       jest.spyOn(usersService, 'create').mockResolvedValue(user);
 
       const response: Response = {
@@ -60,9 +60,6 @@ describe('AuthService', () => {
 
       await authService.signUp(response, createUserDto);
 
-      expect(usersRepository.find).toHaveBeenCalledWith({
-        where: { email: createUserDto.email },
-      });
       expect(usersService.create).toHaveBeenCalledWith(createUserDto);
       expect(response.cookie).toHaveBeenCalledWith(
         USER_ID,
@@ -82,7 +79,7 @@ describe('AuthService', () => {
       user.email = createUserDto.email;
       user.password = createUserDto.email;
 
-      jest.spyOn(usersRepository, 'find').mockResolvedValue([user]);
+      jest.spyOn(usersRepository, 'findOne').mockResolvedValue(user);
 
       const response: Response = {
         cookie: jest.fn(),

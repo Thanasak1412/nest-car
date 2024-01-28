@@ -2,11 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { Repository } from 'typeorm';
 
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -29,14 +25,6 @@ export class AuthService {
     response: Response,
     createUserDto: CreateUserDto,
   ): Promise<User> {
-    const { email } = createUserDto;
-
-    const userExist = await this.usersRepository.find({ where: { email } });
-
-    if (userExist.length) {
-      throw new ConflictException('The user already exist');
-    }
-
     const user = await this.usersService.create(createUserDto);
 
     response.cookie(USER_ID, user.id, this.configService.get(COOKIE_OPTIONS));
