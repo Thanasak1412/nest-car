@@ -1,7 +1,7 @@
-import { IsOptional, IsString, IsStrongPassword } from 'class-validator';
+import { IsEmail, IsOptional, IsStrongPassword } from 'class-validator';
 
 export class UpdateUserDto {
-  @IsString()
+  @IsEmail()
   @IsOptional()
   readonly email: string;
 
