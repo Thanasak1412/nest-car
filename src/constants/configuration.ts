@@ -9,6 +9,14 @@ const ENV_PROD = 'env.prod';
 const DB_TYPE = 'sqlite';
 const DB_NAME = 'db.name';
 const SESSION_SECRET = 'session.secret';
+const GET = 'GET';
+const POST = 'POST';
+const PUT = 'PUT';
+const DELETE = 'DELETE';
+const CONTENT_TYPE = 'CONTENT_TYPE';
+const AUTHORIZATION = 'AUTHORIZATION';
+const OPTIONS = 'OPTIONS';
+const API_CORS_OPTIONS = 'api.corsOptions';
 
 export {
   API_PORT,
@@ -22,4 +30,12 @@ export {
   DB_TYPE,
   DB_NAME,
   SESSION_SECRET,
+  GET,
+  POST,
+  PUT,
+  DELETE,
+  CONTENT_TYPE,
+  AUTHORIZATION,
+  OPTIONS,
+  API_CORS_OPTIONS,
 };
