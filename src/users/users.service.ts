@@ -1,7 +1,11 @@
 import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateUserDto } from '../auth/dtos/create-user.dto';
@@ -17,6 +21,14 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const { email } = createUserDto;
+
+    const userExist = await this.userRepository.findOne({ where: { email } });
+
+    if (userExist) {
+      throw new ConflictException(`User is already exist: ${email}`);
+    }
+
     const saltOrRound = 10;
 
     const salt = await bcrypt.genSalt(saltOrRound);
@@ -77,10 +89,6 @@ export class UsersService {
   async deleteUser(id: number): Promise<void> {
     const user = await this.findOne(id);
 
-    const result = await this.userRepository.delete({ id, ...user });
-
-    if (!result.affected) {
-      throw new NotFoundException(`User with id: ${id} not found`);
-    }
+    await this.userRepository.delete({ id, ...user });
   }
 }

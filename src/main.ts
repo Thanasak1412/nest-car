@@ -13,6 +13,7 @@ import {
   SESSION_SECRET,
 } from './constants/configuration';
 import { HttpExceptionFilter } from './exception/http.exception';
+import { AuthGuard } from './guards/auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -35,6 +36,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  app.useGlobalGuards(new AuthGuard());
 
   await app.listen(configService.get(API_PORT));
 }
