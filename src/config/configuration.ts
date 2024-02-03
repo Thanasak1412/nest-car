@@ -19,6 +19,10 @@ export default () => ({
       optionsSuccessStatus: 204,
     },
   },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expired: process.env.JWT_EXPIRED,
+  },
   cookie: {
     secret: process.env.COOKIE_SECRET,
     configuration: {

@@ -1,3 +1,4 @@
+import * as Crypto from 'crypto';
 import * as Joi from 'joi';
 
 export const configValidationAppSchema = Joi.object({
@@ -11,4 +12,15 @@ export const configValidationAppSchema = Joi.object({
 
 export const configValidationDbSchema = Joi.object({
   DB_NAME: Joi.string().required(),
+});
+
+// * To handle default the jwt secret
+// * If it doesn't define the JWT secret from .env file
+let defaultJwtSecret: string = '';
+Crypto.randomBytes(100, (_err, buf) => {
+  defaultJwtSecret = buf.toString('hex');
+});
+export const configValidateJwtSchema = Joi.object({
+  JWT_SECRET: Joi.string().default(defaultJwtSecret).required(),
+  JWT_EXPIRED: Joi.string().default('300s').required(),
 });

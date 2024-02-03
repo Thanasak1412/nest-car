@@ -1,26 +1,68 @@
 import { Request } from 'express';
-import { Observable } from 'rxjs';
+import { USER } from 'src/constants/user';
 
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
+import { JWT_SECRET } from '../constants/configuration';
 import { PUBLIC_ROUTES } from '../constants/request';
-
-interface Cookies {
-  [key: string]: string;
-}
-
-interface IRequest extends Request {
-  cookies: Cookies;
-}
+import { BEARER } from '../constants/token';
+import { JwtPayload } from '../types/auth';
+import { CurrentUserRequest } from '../types/users';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest<IRequest>();
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest<CurrentUserRequest>();
     const { userId } = request.cookies;
 
-    return !!userId || PUBLIC_ROUTES.includes(request.url);
+    const isPublicRoutes = PUBLIC_ROUTES.some((route) =>
+      request.url.includes(route),
+    );
+
+    if (isPublicRoutes) {
+      return true;
+    }
+
+    const token = this.extractTokenFromHeader(request);
+
+    if (!token) {
+      throw new UnauthorizedException();
+    }
+
+    try {
+      const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
+        secret: this.configService.get(JWT_SECRET),
+      });
+
+      if (+userId !== payload.sub) {
+        return false;
+      }
+
+      request[USER] = { id: payload.sub, email: payload.email };
+    } catch (error) {
+      console.error('Failed while verify token => ', error);
+
+      throw new UnauthorizedException();
+    }
+
+    return true;
+  }
+
+  private extractTokenFromHeader(request: Request): string | undefined {
+    const [tokenType, token] = request.headers.authorization?.split(' ') ?? [];
+
+    return tokenType === BEARER ? token : undefined;
   }
 }
