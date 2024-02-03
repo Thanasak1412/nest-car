@@ -17,6 +17,8 @@ const CONTENT_TYPE = 'CONTENT_TYPE';
 const AUTHORIZATION = 'AUTHORIZATION';
 const OPTIONS = 'OPTIONS';
 const API_CORS_OPTIONS = 'api.corsOptions';
+const JWT_SECRET = 'jwt.secret';
+const JWT_EXPIRED = 'jwt.expired';
 
 export {
   API_PORT,
@@ -38,4 +40,6 @@ export {
   AUTHORIZATION,
   OPTIONS,
   API_CORS_OPTIONS,
+  JWT_SECRET,
+  JWT_EXPIRED,
 };

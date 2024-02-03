@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { USER } from 'src/constants/user';
 
 import {
   CallHandler,
@@ -23,7 +24,7 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
     if (userId) {
       const currentUser = await this.usersService.findOne(userId);
-      request.currentUser = currentUser;
+      request[USER] = currentUser;
     }
 
     return next.handle();

@@ -1,8 +1,8 @@
 import { Response } from 'express';
+import { ResponseAuth } from 'src/types/auth';
 
 import { Body, Controller, Post, Res } from '@nestjs/common';
 
-import { User } from '../users/user.entity';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SignInDto } from './dtos/sign-in.dto';
@@ -15,7 +15,7 @@ export class AuthController {
   signUp(
     @Res({ passthrough: true }) response: Response,
     @Body() createUserDto: CreateUserDto,
-  ) {
+  ): Promise<ResponseAuth> {
     return this.authService.signUp(response, createUserDto);
   }
 
@@ -23,7 +23,7 @@ export class AuthController {
   signIn(
     @Res({ passthrough: true }) response: Response,
     @Body() signInDto: SignInDto,
-  ): Promise<User> {
+  ): Promise<ResponseAuth> {
     return this.authService.signIn(response, signInDto);
   }
 }
