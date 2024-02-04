@@ -10,7 +10,7 @@ export class UserDto {
   email: string;
 
   constructor(user: User) {
-    this.id = user.id;
-    this.email = user.email;
+    this.id = user?.id;
+    this.email = user?.email;
   }
 }
