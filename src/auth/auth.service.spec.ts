@@ -3,10 +3,13 @@ import { Response } from 'express';
 import { Repository } from 'typeorm';
 
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
+import { configValidationAppSchema } from '../config/config.schema';
+import configuration from '../config/configuration';
 import { COOKIE_OPTIONS } from '../constants/configuration';
 import { USER_ID } from '../constants/user';
 import { User } from '../users/user.entity';
@@ -22,7 +25,18 @@ describe('AuthService', () => {
   let usersRepository: Repository<User>;
 
   beforeEach(async () => {
+    const jwtSecret = 'default_secret';
+
     const moduleRef: TestingModule = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forRoot({
+          validationSchema: configValidationAppSchema,
+          load: [configuration],
+        }),
+        JwtModule.register({
+          secret: jwtSecret,
+        }),
+      ],
       providers: [
         AuthService,
         UsersService,
@@ -58,7 +72,7 @@ describe('AuthService', () => {
         cookie: jest.fn(),
       } as unknown as Response;
 
-      await authService.signUp(response, createUserDto);
+      const res = await authService.signUp(response, createUserDto);
 
       expect(usersService.create).toHaveBeenCalledWith(createUserDto);
       expect(response.cookie).toHaveBeenCalledWith(
@@ -66,6 +80,7 @@ describe('AuthService', () => {
         user.id,
         configService.get(COOKIE_OPTIONS),
       );
+      expect(res.accessToken).toBeTruthy();
     });
 
     it('should throw conflict exception if the user already exists', async () => {
@@ -110,7 +125,7 @@ describe('AuthService', () => {
       jest.spyOn(usersService, 'find').mockResolvedValue([user]);
       jest.spyOn(bcrypt, 'compare').mockImplementation(() => true);
 
-      await authService.signIn(response, signInDto);
+      const res = await authService.signIn(response, signInDto);
 
       const [findUser] = await usersService.find({ email: signInDto.email });
 
@@ -123,6 +138,7 @@ describe('AuthService', () => {
         user.id,
         configService.get(COOKIE_OPTIONS),
       );
+      expect(res.accessToken).toBeTruthy();
     });
 
     it('should throw new unauthorized if the email is incorrect', async () => {

@@ -1,5 +1,4 @@
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from 'src/auth/dtos/create-user.dto';
 import { Repository } from 'typeorm';
 
 import { ConflictException, NotFoundException } from '@nestjs/common';
@@ -7,6 +6,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
+import { CreateUserDto } from '../auth/dtos/create-user.dto';
 import { FindUserDto } from './dtos/find-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { CurrentUserInterceptor } from './interceptor/current-user.interceptor';

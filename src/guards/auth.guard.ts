@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { USER } from 'src/constants/user';
 
 import {
   CanActivate,
@@ -13,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JWT_SECRET } from '../constants/configuration';
 import { PUBLIC_ROUTES } from '../constants/request';
 import { BEARER } from '../constants/token';
+import { USER } from '../constants/user';
 import { JwtPayload } from '../types/auth';
 import { CurrentUserRequest } from '../types/users';
 

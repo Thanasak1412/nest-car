@@ -1,4 +1,4 @@
-import { UserDto } from 'src/users/dtos/user.dto';
+import { UserDto } from '../users/dtos/user.dto';
 
 export type ResponseAuth = {
   accessToken: string;
