@@ -1,6 +1,13 @@
 import { Response } from 'express';
 
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 
 import { ResponseAuth } from '../types/auth';
 import { AuthService } from './auth.service';
@@ -11,7 +18,7 @@ import { SignInDto } from './dtos/sign-in.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('signup')
+  @Post('/signup')
   signUp(
     @Res({ passthrough: true }) response: Response,
     @Body() createUserDto: CreateUserDto,
@@ -19,7 +26,8 @@ export class AuthController {
     return this.authService.signUp(response, createUserDto);
   }
 
-  @Post('signin')
+  @Post('/signin')
+  @HttpCode(HttpStatus.OK)
   signIn(
     @Res({ passthrough: true }) response: Response,
     @Body() signInDto: SignInDto,
