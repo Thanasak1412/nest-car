@@ -1,5 +1,4 @@
 import { Observable } from 'rxjs';
-import { USER } from 'src/constants/user';
 
 import {
   CallHandler,
@@ -8,6 +7,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 
+import { USER } from '../../constants/user';
 import { CurrentUserRequest } from '../../types/users';
 import { UsersService } from '../users.service';
 

@@ -38,10 +38,10 @@ describe('usersController', () => {
 
   describe('findUser', () => {
     it('should return the user from id', async () => {
-      const id = 1;
+      const id = '1';
 
       const user = new User();
-      user.id = id;
+      user.id = +id;
       user.email = 'test@email.com';
       user.password = 'hash-password';
 
@@ -53,14 +53,14 @@ describe('usersController', () => {
 
   describe('updateUser', () => {
     it('should updated email and return updated user', async () => {
-      const id = 1;
+      const id = '1';
       const updateUserDto: UpdateUserDto = {
         email: 'newEmail@email.com',
         password: undefined,
       };
 
       const user = new User();
-      user.id = id;
+      user.id = +id;
       user.email = updateUserDto.email;
       user.password = 'oldPassword';
 
@@ -70,14 +70,14 @@ describe('usersController', () => {
     });
 
     it('should updated password and return updated user', async () => {
-      const id = 1;
+      const id = '1';
       const updateUserDto: UpdateUserDto = {
         email: undefined,
         password: 'newPassword',
       };
 
       const user = new User();
-      user.id = id;
+      user.id = +id;
       user.email = 'test@email.com';
       user.password = updateUserDto.password;
 
@@ -125,17 +125,17 @@ describe('usersController', () => {
 
   describe('deleteUser', () => {
     it('should delete user from id', () => {
-      const id = 1;
+      const id = '1';
 
       jest.spyOn(usersService, 'deleteUser').mockResolvedValue();
 
       usersController.deleteUser(id);
 
-      expect(usersService.deleteUser).toHaveBeenCalledWith(id);
+      expect(usersService.deleteUser).toHaveBeenCalledWith(+id);
     });
 
     it('should return void', () => {
-      const id = 1;
+      const id = '1';
 
       jest.spyOn(usersService, 'deleteUser').mockResolvedValue();
 

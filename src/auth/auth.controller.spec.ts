@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { Repository } from 'typeorm';
 
 import { ConfigService } from '@nestjs/config';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
@@ -17,13 +18,16 @@ import { SignInDto } from './dtos/sign-in.dto';
 describe('authController', () => {
   let authController: AuthController;
   let authService: AuthService;
+  let jwtService: JwtService;
 
   beforeEach(async () => {
     const moduleRef = await Test.createTestingModule({
+      imports: [JwtModule],
       providers: [
         AuthService,
         ConfigService,
         UsersService,
+        JwtService,
         {
           provide: getRepositoryToken(User),
           useClass: Repository,
@@ -34,10 +38,11 @@ describe('authController', () => {
 
     authController = moduleRef.get<AuthController>(AuthController);
     authService = moduleRef.get<AuthService>(AuthService);
+    jwtService = moduleRef.get<JwtService>(JwtService);
   });
 
   describe('signUp', () => {
-    it('should return created user', async () => {
+    it('should response credential with access token and user info', async () => {
       const createUserDto: CreateUserDto = {
         email: 'test@test.com',
         password: 'Test-123ijfklsdajkfl',
@@ -52,11 +57,16 @@ describe('authController', () => {
       user.email = createUserDto.email;
       user.password = 'strong-password';
 
-      jest.spyOn(authService, 'signUp').mockResolvedValue(user);
+      const token: string = 'fake-token';
+
+      jest.spyOn(jwtService, 'signAsync').mockResolvedValue(token);
+      jest
+        .spyOn(authService, 'signUp')
+        .mockResolvedValue({ accessToken: token, user });
 
       expect(
-        (await authController.signUp(response, createUserDto)).email,
-      ).toStrictEqual(user.email);
+        (await authController.signUp(response, createUserDto)).accessToken,
+      ).toStrictEqual(token);
     });
 
     it('should throw error if email is incorrect email format', async () => {
@@ -97,7 +107,7 @@ describe('authController', () => {
   });
 
   describe('signIn', () => {
-    it('should return the user if login correctly', async () => {
+    it('should response user credential if login correctly', async () => {
       const signInDto: SignInDto = {
         email: 'Test@email.com',
         password: 'Test.123fjasdkljfaskdjl',
@@ -112,11 +122,16 @@ describe('authController', () => {
       user.email = signInDto.email;
       user.password = 'hash-password';
 
-      jest.spyOn(authService, 'signIn').mockResolvedValue(user);
+      const token = 'fake-token';
 
-      expect((await authController.signIn(response, signInDto)).email).toBe(
-        signInDto.email,
-      );
+      jest.spyOn(jwtService, 'signAsync').mockResolvedValue(token);
+      jest
+        .spyOn(authService, 'signIn')
+        .mockResolvedValue({ accessToken: token, user });
+
+      expect(
+        (await authController.signIn(response, signInDto)).accessToken,
+      ).toBe(token);
     });
 
     it('should throw an error if the email is incorrect email format', async () => {

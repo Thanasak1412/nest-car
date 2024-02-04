@@ -1,10 +1,9 @@
-import { configValidateJwtSchema } from 'src/config/config.schema';
-
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { configValidateJwtSchema } from '../config/config.schema';
 import { JWT_EXPIRED, JWT_SECRET } from '../constants/configuration';
 import { User } from '../users/user.entity';
 import { UsersModule } from '../users/users.module';

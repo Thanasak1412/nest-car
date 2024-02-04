@@ -1,8 +1,8 @@
 import { Response } from 'express';
-import { ResponseAuth } from 'src/types/auth';
 
 import { Body, Controller, Post, Res } from '@nestjs/common';
 
+import { ResponseAuth } from '../types/auth';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SignInDto } from './dtos/sign-in.dto';
