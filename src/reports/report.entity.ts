@@ -6,5 +6,23 @@ export class Report {
   id: number;
 
   @Column()
+  make: string;
+
+  @Column()
+  model: string;
+
+  @Column()
+  year: number;
+
+  @Column()
+  lat: number;
+
+  @Column()
+  lng: number;
+
+  @Column()
+  mileage: number;
+
+  @Column()
   price: number;
 }
