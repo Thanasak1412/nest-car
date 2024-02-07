@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 
 import { Serialize } from '../interceptor/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
 import { CurrentUser } from '../users/users.decorator';
+import { ApproveReportDto } from './dtos/approve-report.dto';
 import { CreateReportDto } from './dtos/create-report.dto';
 import { FindReportDto } from './dtos/find-report.dto';
 import { ReportDto } from './dtos/report.dto';
@@ -23,7 +32,15 @@ export class ReportsController {
   }
 
   @Get('/')
-  getReports(@Param() findReportDto: FindReportDto): Promise<Report> {
+  getReports(@Query() findReportDto: FindReportDto): Promise<Report> {
     return this.reportsService.find(findReportDto);
+  }
+
+  @Patch('/:id/approve')
+  approveReport(
+    @Param('id') id: string,
+    @Body() approveReportDto: ApproveReportDto,
+  ) {
+    return this.reportsService.approval(+id, approveReportDto);
   }
 }

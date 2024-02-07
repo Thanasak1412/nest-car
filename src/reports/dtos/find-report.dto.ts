@@ -1,23 +1,27 @@
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class FindReportDto {
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
   @IsString()
   @IsOptional()
-  make: string;
+  make?: string;
 
   @IsString()
   @IsOptional()
-  model: string;
+  model?: string;
 
   @IsNumber()
   @IsOptional()
-  price: number;
+  price?: number;
 
   @IsNumber()
   @IsOptional()
-  mileage: number;
+  mileage?: number;
 
   @IsNumber()
   @IsOptional()
-  year: number;
+  year?: number;
 }
