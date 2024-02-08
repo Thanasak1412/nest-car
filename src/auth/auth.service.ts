@@ -61,7 +61,11 @@ export class AuthService {
   }
 
   private signToken(user: User): Promise<string> {
-    const payload: JwtPayload = { sub: user.id, email: user.email };
+    const payload: JwtPayload = {
+      sub: user.id,
+      email: user.email,
+      admin: user.admin,
+    };
 
     return this.jwtService.signAsync(payload, {
       secret: this.configService.get(JWT_SECRET),

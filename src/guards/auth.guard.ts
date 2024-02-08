@@ -50,7 +50,11 @@ export class AuthGuard implements CanActivate {
         return false;
       }
 
-      request[USER] = { id: payload.sub, email: payload.email };
+      request[USER] = {
+        id: payload.sub,
+        email: payload.email,
+        admin: payload.admin,
+      };
     } catch (error) {
       console.error('Failed while verify token => ', error);
 

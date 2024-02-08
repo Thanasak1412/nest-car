@@ -12,6 +12,7 @@ import { UserDto } from '../users/dtos/user.dto';
 import { ApproveReportDto } from './dtos/approve-report.dto';
 import { CreateReportDto } from './dtos/create-report.dto';
 import { FindReportDto } from './dtos/find-report.dto';
+import { GetEstimateDto } from './dtos/get-estimate.dto';
 import { Report } from './report.entity';
 
 @Injectable()
@@ -84,6 +85,41 @@ export class ReportsService {
       }
 
       throw new BadRequestException(error);
+    }
+  }
+
+  async createEstimate(query: GetEstimateDto): Promise<{ price: number }> {
+    const { model, make, lat, lng, mileage, year } = query;
+
+    try {
+      const execResult = await this.reportsRepository
+        .createQueryBuilder()
+        .select('AVG(price)', 'price')
+        .where('model = :model', { model })
+        .andWhere('make = :make', { make })
+        .andWhere('lat - :lat BETWEEN -3 AND 3', { lat })
+        .andWhere('lng - :lng BETWEEN -3 AND 3', { lng })
+        .andWhere('year - :year BETWEEN 0 AND 5 ', { year })
+        .orderBy('ABS(mileage - :mileage)', 'DESC')
+        .limit(3)
+        .setParameters({ mileage })
+        .getRawOne<{ price: number }>();
+
+      if (!execResult.price) {
+        throw new NotFoundException(
+          `Data not found with: ${JSON.stringify(query)}`,
+        );
+      }
+
+      return execResult;
+    } catch (error) {
+      console.error('Failed while create estimate => ', error);
+
+      if (error.response?.error) {
+        throw error;
+      }
+
+      throw new BadRequestException(error.message);
     }
   }
 }

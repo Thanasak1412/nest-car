@@ -8,4 +8,5 @@ export type ResponseAuth = {
 export type JwtPayload = {
   sub: number;
   email: string;
+  admin: boolean;
 };

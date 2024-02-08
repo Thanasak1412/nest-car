@@ -9,8 +9,12 @@ export class UserDto {
   @Expose()
   email: string;
 
+  @Expose()
+  admin: boolean;
+
   constructor(user: User) {
     this.id = user?.id;
     this.email = user?.email;
+    this.admin = user?.admin;
   }
 }
