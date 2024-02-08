@@ -1,9 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Report {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ default: false })
+  approved: boolean;
 
   @Column()
   make: string;
@@ -25,4 +30,7 @@ export class Report {
 
   @Column()
   price: number;
+
+  @ManyToOne(() => User, (user) => user.reports, { eager: true })
+  user: User;
 }
