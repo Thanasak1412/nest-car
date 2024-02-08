@@ -1,11 +1,15 @@
+import { CurrentUserRequest } from 'src/types/users';
+
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   Param,
   Patch,
   Post,
   Query,
+  Request,
 } from '@nestjs/common';
 
 import { Serialize } from '../interceptor/serialize.interceptor';
@@ -14,6 +18,7 @@ import { CurrentUser } from '../users/users.decorator';
 import { ApproveReportDto } from './dtos/approve-report.dto';
 import { CreateReportDto } from './dtos/create-report.dto';
 import { FindReportDto } from './dtos/find-report.dto';
+import { GetEstimateDto } from './dtos/get-estimate.dto';
 import { ReportDto } from './dtos/report.dto';
 import { Report } from './report.entity';
 import { ReportsService } from './reports.service';
@@ -40,7 +45,17 @@ export class ReportsController {
   approveReport(
     @Param('id') id: string,
     @Body() approveReportDto: ApproveReportDto,
+    @Request() req: CurrentUserRequest,
   ) {
+    if (!req.user.admin) {
+      throw new ForbiddenException();
+    }
+
     return this.reportsService.approval(+id, approveReportDto);
+  }
+
+  @Get('/get-estimate')
+  getEstimate(@Query() query: GetEstimateDto) {
+    return this.reportsService.createEstimate(query);
   }
 }

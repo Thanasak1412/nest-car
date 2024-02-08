@@ -31,6 +31,8 @@ export class ReportDto {
   price: number;
 
   @Expose()
-  @Transform(({ obj }) => ({ id: obj.user.id, email: obj.user.email }))
+  @Transform(({ obj, value }) =>
+    value ? { id: obj.user.id, email: obj.user.email } : undefined,
+  )
   user: User;
 }
