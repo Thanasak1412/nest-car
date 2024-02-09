@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -28,7 +28,11 @@ export class AuthService {
   ): Promise<ResponseAuth> {
     const user = await this.usersService.create(createUserDto);
 
-    response.cookie(USER_ID, user.id, this.configService.get(COOKIE_OPTIONS));
+    response.cookie(
+      USER_ID,
+      user.id,
+      this.configService.get<CookieOptions>(COOKIE_OPTIONS),
+    );
 
     const userDto = new UserDto(user);
 
@@ -50,7 +54,11 @@ export class AuthService {
       throw new UnauthorizedException('The email or password is incorrect');
     }
 
-    response.cookie(USER_ID, user.id, this.configService.get(COOKIE_OPTIONS));
+    response.cookie(
+      USER_ID,
+      user.id,
+      this.configService.get<CookieOptions>(COOKIE_OPTIONS),
+    );
 
     const userDto = new UserDto(user);
 
@@ -68,7 +76,7 @@ export class AuthService {
     };
 
     return this.jwtService.signAsync(payload, {
-      secret: this.configService.get(JWT_SECRET),
+      secret: this.configService.get<string>(JWT_SECRET),
     });
   }
 }

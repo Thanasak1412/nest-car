@@ -17,8 +17,10 @@ import { UsersModule } from './users/users.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      validationSchema: configValidationAppSchema,
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
       load: [configuration],
+      validationSchema: configValidationAppSchema,
     }),
     TypeOrmModule.forRootAsync({
       imports: [
@@ -29,7 +31,7 @@ import { UsersModule } from './users/users.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: DB_TYPE,
-        database: configService.get(DB_NAME),
+        database: configService.get<string>(DB_NAME),
         entities: [User, Report],
         synchronize: true,
       }),

@@ -3,6 +3,10 @@ import * as session from 'express-session';
 import helmet from 'helmet';
 
 import { ValidationPipe } from '@nestjs/common';
+import {
+  CorsOptions,
+  CorsOptionsDelegate,
+} from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
@@ -23,16 +27,18 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const jwtService = app.get(JwtService);
-  const cookieSecret = configService.get(COOKIE_SECRET);
+  const cookieSecret = configService.get<string>(COOKIE_SECRET);
 
-  app.enableCors(configService.get(API_CORS_OPTIONS));
+  app.enableCors(
+    configService.get<CorsOptions | CorsOptionsDelegate<any>>(API_CORS_OPTIONS),
+  );
   app.use(helmet());
-  app.setGlobalPrefix(configService.get(API_VERSION));
+  app.setGlobalPrefix(configService.get<string>(API_VERSION));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(cookieParser(cookieSecret));
   app.use(
     session({
-      secret: configService.get(SESSION_SECRET),
+      secret: configService.get<string>(SESSION_SECRET),
       resave: false,
       saveUninitialized: false,
     }),
@@ -46,6 +52,6 @@ async function bootstrap() {
   );
   app.useGlobalGuards(new AuthGuard(jwtService, configService));
 
-  await app.listen(configService.get(API_PORT));
+  await app.listen(configService.get<number>(API_PORT));
 }
 bootstrap();
