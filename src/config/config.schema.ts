@@ -22,5 +22,5 @@ Crypto.randomBytes(100, (_err, buf) => {
 });
 export const configValidateJwtSchema = Joi.object({
   JWT_SECRET: Joi.string().default(defaultJwtSecret).required(),
-  JWT_EXPIRED: Joi.string().default('300s').required(),
+  JWT_EXPIRED: Joi.string().default('5m').required(),
 });

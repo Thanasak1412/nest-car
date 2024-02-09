@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Response } from 'express';
+import { CookieOptions, Response } from 'express';
 import { Repository } from 'typeorm';
 
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
@@ -78,7 +78,7 @@ describe('AuthService', () => {
       expect(response.cookie).toHaveBeenCalledWith(
         USER_ID,
         user.id,
-        configService.get(COOKIE_OPTIONS),
+        configService.get<CookieOptions>(COOKIE_OPTIONS),
       );
       expect(res.accessToken).toBeTruthy();
     });
@@ -136,7 +136,7 @@ describe('AuthService', () => {
       expect(response.cookie).toHaveBeenCalledWith(
         USER_ID,
         user.id,
-        configService.get(COOKIE_OPTIONS),
+        configService.get<CookieOptions>(COOKIE_OPTIONS),
       );
       expect(res.accessToken).toBeTruthy();
     });
