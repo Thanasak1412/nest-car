@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { configValidateJwtSchema } from '../config/config.schema';
+import configuration from '../config/configuration';
 import { JWT_EXPIRED, JWT_SECRET } from '../constants/configuration';
 import { User } from '../users/user.entity';
 import { UsersModule } from '../users/users.module';
@@ -18,15 +19,17 @@ import { AuthService } from './auth.service';
     JwtModule.registerAsync({
       imports: [
         ConfigModule.forRoot({
+          envFilePath: `.env.${process.env.NODE_ENV}`,
+          load: [configuration],
           validationSchema: configValidateJwtSchema,
         }),
       ],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         global: true,
-        secret: configService.get(JWT_SECRET),
+        secret: configService.get<string>(JWT_SECRET),
         signOptions: {
-          expiresIn: configService.get(JWT_EXPIRED),
+          expiresIn: configService.get<string>(JWT_EXPIRED),
         },
       }),
     }),
