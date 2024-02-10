@@ -27,7 +27,7 @@ import { UsersModule } from './users/users.module';
         }),
       ],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) =>
+      useFactory: (configService: ConfigService) =>
         configService.get(CONFIG_DB),
     }),
     UsersModule,
