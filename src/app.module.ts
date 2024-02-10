@@ -8,10 +8,8 @@ import {
   configValidationDbSchema,
 } from './config/config.schema';
 import configuration from './config/configuration';
-import { DB_NAME, DB_TYPE } from './constants/configuration';
-import { Report } from './reports/report.entity';
+import { CONFIG_DB } from './constants/configuration';
 import { ReportsModule } from './reports/reports.module';
-import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -29,12 +27,8 @@ import { UsersModule } from './users/users.module';
         }),
       ],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: DB_TYPE,
-        database: configService.get<string>(DB_NAME),
-        entities: [User, Report],
-        synchronize: true,
-      }),
+      useFactory: async (configService: ConfigService) =>
+        configService.get(CONFIG_DB),
     }),
     UsersModule,
     ReportsModule,
