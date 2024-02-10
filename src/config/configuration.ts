@@ -1,3 +1,6 @@
+import { config as configDotEnv } from 'dotenv';
+import { DataSource, DataSourceOptions } from 'typeorm';
+
 import {
   AUTHORIZATION,
   CONTENT_TYPE,
@@ -8,33 +11,46 @@ import {
   PUT,
 } from '../constants/configuration';
 
-export default () => ({
-  api: {
-    port: process.env.API_PORT,
-    version: process.env.API_VERSION,
-    corsOptions: {
-      origin: true,
-      method: [GET, POST, PUT, DELETE, OPTIONS],
-      allowedHeaders: [CONTENT_TYPE, AUTHORIZATION],
-      optionsSuccessStatus: 204,
+configDotEnv({ path: `.env.${process.env.NODE_ENV}` });
+
+export default function config() {
+  return {
+    api: {
+      port: process.env.API_PORT,
+      version: process.env.API_VERSION,
+      corsOptions: {
+        origin: true,
+        method: [GET, POST, PUT, DELETE, OPTIONS],
+        allowedHeaders: [CONTENT_TYPE, AUTHORIZATION],
+        optionsSuccessStatus: 204,
+      },
     },
-  },
-  jwt: {
-    secret: process.env.JWT_SECRET,
-    expired: process.env.JWT_EXPIRED,
-  },
-  cookie: {
-    secret: process.env.COOKIE_SECRET,
-    configuration: {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      expired: process.env.JWT_EXPIRED,
     },
-  },
-  db: {
-    name: process.env.DB_NAME,
-  },
-  session: {
-    secret: process.env.SESSION_SECRET,
-  },
-});
+    cookie: {
+      secret: process.env.COOKIE_SECRET,
+      configuration: {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax',
+      },
+    },
+    db: {
+      type: process.env.DB_TYPE,
+      database: process.env.DB_NAME,
+      entities: ['dist/**/*.entity{.js,.ts}'],
+      migrations: ['dist/migrations/*{.js,.ts}'],
+      autoLoadEntities: true,
+      synchronize: false,
+    },
+    session: {
+      secret: process.env.SESSION_SECRET,
+    },
+  };
+}
+
+export const connectionSource = new DataSource(
+  config().db as DataSourceOptions,
+);

@@ -6,8 +6,7 @@ const ENV_DEV = 'env.development';
 const ENV_TEST = 'env.test';
 const ENV_UAT = 'env.uat';
 const ENV_PROD = 'env.prod';
-const DB_TYPE = 'sqlite';
-const DB_NAME = 'db.name';
+const CONFIG_DB = 'db';
 const SESSION_SECRET = 'session.secret';
 const GET = 'GET';
 const POST = 'POST';
@@ -29,8 +28,7 @@ export {
   ENV_TEST,
   ENV_UAT,
   ENV_PROD,
-  DB_TYPE,
-  DB_NAME,
+  CONFIG_DB,
   SESSION_SECRET,
   GET,
   POST,
