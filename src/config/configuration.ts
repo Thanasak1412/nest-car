@@ -38,12 +38,14 @@ export default function config() {
       },
     },
     db: {
+      url: process.env.DB_URL,
       type: process.env.DB_TYPE,
       database: process.env.DB_NAME,
       entities: ['dist/**/*.entity{.js,.ts}'],
       migrations: ['dist/migrations/*{.js,.ts}'],
       autoLoadEntities: true,
       synchronize: false,
+      ssl: { rejectUnauthorized: false },
     },
     session: {
       secret: process.env.SESSION_SECRET,
