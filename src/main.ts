@@ -25,6 +25,8 @@ import { AuthGuard } from './guards/auth.guard';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  console.log(process.env.NODE_DEV);
+
   const configService = app.get(ConfigService);
   const jwtService = app.get(JwtService);
   const cookieSecret = configService.get<string>(COOKIE_SECRET);

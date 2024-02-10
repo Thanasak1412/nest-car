@@ -12,6 +12,7 @@ import { CONFIG_DB } from './constants/configuration';
 import { ReportsModule } from './reports/reports.module';
 import { UsersModule } from './users/users.module';
 
+console.log(process.env.NODE_ENV);
 @Module({
   imports: [
     ConfigModule.forRoot({
